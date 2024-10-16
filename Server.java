@@ -70,7 +70,7 @@ public class Server {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                clientHandlers.remove(this);  //Hapus handler setelah selesai
+                clientHandlers.remove(this);  // Hapus handler setelah selesai
             }
         }
 
