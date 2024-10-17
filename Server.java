@@ -15,16 +15,21 @@ public class Server {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Klien terhubung!");
 
+                // Inisialisasi handler klien dan tambahkan ke list
                 ClientHandler clientHandler = new ClientHandler(clientSocket, clientHandlers.size() + 1);
                 clientHandlers.add(clientHandler);
-                new Thread(clientHandler).start();
+
+                clientHandler.handleClient();
+
+                // Hapus handler dari list setelah selesai
+                clientHandlers.remove(clientHandler);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static class ClientHandler implements Runnable {
+    private static class ClientHandler {
         private Socket clientSocket;
         private PrintWriter out;
         private BufferedReader in;
@@ -35,8 +40,7 @@ public class Server {
             this.clientId = id;
         }
 
-        @Override
-        public void run() {
+        public void handleClient() {
             try {
                 in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -70,7 +74,6 @@ public class Server {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                clientHandlers.remove(this);  // Hapus handler setelah selesai
             }
         }
 
@@ -79,6 +82,7 @@ public class Server {
         }
     }
 
+    // Metode untuk mengirim pesan ke klien tertentu atau ke semua
     private static void broadcastMessage(int fromClientId) {
         Scanner scanner = new Scanner(System.in);
 
@@ -109,4 +113,3 @@ public class Server {
         }
     }
 }
-
